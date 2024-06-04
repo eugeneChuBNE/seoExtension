@@ -1,7 +1,7 @@
 function fetchImages() {
     const images = document.querySelectorAll('#vnx_post_content img');
     const imageData = Array.from(images).map((img, index) => ({
-        id: index + 1,
+        image_id: index + 1,
         alt_text: img.alt || '',
         url: img.src
     }));
@@ -11,14 +11,14 @@ function fetchImages() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ images: imageData })
+        body: JSON.stringify(imageData)
     });
 }
 
 function fetchLinks() {
     const links = document.querySelectorAll('#vnx_post_content a');
     const linkData = Array.from(links).map((link, index) => ({
-        id: index + 1,
+        link_id: index + 1,
         anchor: link.innerText || '',
         url: link.href,
         is_external: link.href.startsWith('http'),
@@ -31,7 +31,7 @@ function fetchLinks() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ links: linkData })
+        body: JSON.stringify(linkData)
     });
 }
 
