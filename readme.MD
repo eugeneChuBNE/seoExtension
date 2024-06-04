@@ -8,9 +8,14 @@ The project is organised into the following directories and files:
 
 - `seo_extension/`
   - `analyser/`
+    - `migrations/`
+        - `__init__.py`
+    - `__init__.py`
     - `admin.py`
+    - `apps.py`
     - `models.py`
     - `serializers.py`
+    - `test.py`
     - `urls.py`
     - `views.py`
   - `chromium_files/`
@@ -20,8 +25,12 @@ The project is organised into the following directories and files:
     - `popup.html`
     - `popup.js`
   - `seo_extension/`
+    - `__init__.py`
+    - `asgi.py`
+    - `wsgi.py`
     - `settings.py`
     - `urls.py`
+  - `manage.py`
 
 ## Files Description
 
