@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SEO Analyser</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>SEO Analyser</h1>
+    <div id="image-section">
+        <h2>Images</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Alt Text</th>
+                    <th>URL</th>
+                </tr>
+            </thead>
+            <tbody id="image-data">
+            </tbody>
+        </table>
+    </div>
+    <div id="link-section">
+        <h2>Links</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Anchor</th>
+                    <th>URL</th>
+                </tr>
+            </thead>
+            <tbody id="link-data">
+            </tbody>
+        </table>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
