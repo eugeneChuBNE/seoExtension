@@ -15,7 +15,8 @@ import environ
 
 # Initialize environment variables
 env = environ.Env()
-environ.Env.read_env()
+# The .env file is located one directory above settings.py
+environ.Env.read_env(env_file=Path(__file__).resolve().parent.parent / '.env')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
