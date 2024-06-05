@@ -4,9 +4,9 @@ from .models import ImageData, LinkData
 class ImageDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImageData
-        fields = '__all__'
+        fields = ['id', 'alt_text', 'url', 'name', 'format', 'caption']
 
 class LinkDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = LinkData
-        fields = '__all__'
+        fields = ['link_id', 'anchor', 'url', 'is_external', 'is_nofollow', 'is_new_tab']
