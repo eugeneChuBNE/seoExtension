@@ -3,43 +3,130 @@
 <head>
   <title>SEO Analyser</title>
   <style>
-    body { font-family: Arial, sans-serif; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { border: 1px solid #ddd; padding: 8px; }
-    th { background-color: #f2f2f2; }
+    body {
+      font-family: Arial, sans-serif;
+      width: 650px;
+      height: 600px;
+      overflow: auto;
+    }
+    .tabs {
+      display: flex;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    .tab {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-bottom: none;
+      background-color: #f2f2f2;
+      margin-right: 2px;
+    }
+    .tab.active {
+      background-color: white;
+      font-weight: bold;
+    }
+    .tab-content {
+      display: none;
+      border: 1px solid #ddd;
+      padding: 10px;
+      background-color: white;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    img.thumbnail {
+      width: 600px;
+      height: auto;
+      display: block;
+      margin-top: 10px;
+    }
+    #message {
+      color: red;
+    }
   </style>
 </head>
 <body>
   <h1>SEO Analyser</h1>
-  <button id="analyze">Analyse</button>
-  <h2>Images</h2>
-  <table id="images-table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Alt Text</th>
-        <th>URL</th>
-        <th>Name</th>
-        <th>Format</th>
-        <th>Caption</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-  <h2>Links</h2>
-  <table id="links-table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Anchor</th>
-        <th>URL</th>
-        <th>Is External</th>
-        <th>Is Nofollow</th>
-        <th>Is New Tab</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <button id="analyse">Analyse</button>
+  <p id="message" style="display:none;">Only support for Vietnix</p>
+  
+  <div id="tab-container">
+    <div class="tabs">
+      <div class="tab active" data-tab="overview-tab">Overview</div>
+      <div class="tab" data-tab="images-tab">Images</div>
+      <div class="tab" data-tab="links-tab">Links</div>
+    </div>
+
+    <div id="overview-tab" class="tab-content active">
+      <h2>Overview</h2>
+      <p><strong>Meta Title:</strong> <span id="meta-title"></span></p>
+      <p><strong>Meta Description:</strong> <span id="meta-description"></span></p>
+      <p><strong>Thumbnail:</strong></p>
+      <img id="thumbnail" class="thumbnail" src="" alt="" />
+      <p><span id="thumbnail-alt"></span></p>
+      <p><strong>Word Count:</strong> <span id="word-count"></span></p>
+
+      <h3>Images</h3>
+      <p><strong>Total Images:</strong> <span id="total-images"></span></p>
+      <p><strong>Images with Alt Text:</strong> <span id="total-images-with-alt"></span></p>
+      <p><strong>Images without Alt Text:</strong> <span id="total-images-without-alt"></span></p>
+      <p><strong>Image Formats:</strong> <span id="image-formats-count"></span></p>
+
+      <h3>Links</h3>
+      <p><strong>Total URLs:</strong> <span id="total-urls"></span></p>
+      <p><strong>Total Duplicated URLs:</strong> <span id="total-duplicated-urls"></span></p>
+      <p><strong>Total New Tab URLs:</strong> <span id="total-new-tab-urls"></span></p>
+      <p><strong>Total Internal Links:</strong> <span id="total-internal-links"></span></p>
+      <p><strong>Total External Links:</strong> <span id="total-external-links"></span></p>
+      <p><strong>Total No-follow URLs:</strong> <span id="total-no-follow-urls"></span></p>
+    </div>
+
+    <div id="images-tab" class="tab-content">
+      <h2>Images</h2>
+      <table id="images-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Alt Text</th>
+            <th>URL</th>
+            <th>Name</th>
+            <th>Format</th>
+            <th>Caption</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div id="links-tab" class="tab-content">
+      <h2>Links</h2>
+      <table id="links-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Anchor</th>
+            <th>URL</th>
+            <th>Is External</th>
+            <th>Is Nofollow</th>
+            <th>Is New Tab</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
   <script src="popup.js"></script>
 </body>
 </html>
