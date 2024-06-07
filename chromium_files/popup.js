@@ -1,11 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   const tabs = document.querySelectorAll('.tab');
   const tabContents = document.querySelectorAll('.tab-content');
-  const analyseButton = document.getElementById('analyse');
   const messageElement = document.getElementById('message');
   const tabContainer = document.getElementById('tab-container');
-
-  tabContainer.style.display = 'none'; // Hide tabs and content initially
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
@@ -17,30 +14,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  analyseButton.addEventListener('click', () => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const currentTabUrl = tabs[0].url;
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const currentTabUrl = tabs[0].url;
 
-      if (currentTabUrl.includes('vietnix.vn')) {
-        messageElement.style.display = 'none';
-        tabContainer.style.display = 'block';
+    if (currentTabUrl.includes('vietnix.vn')) {
+      messageElement.style.display = 'none';
+      tabContainer.style.display = 'block';
 
-        chrome.tabs.sendMessage(tabs[0].id, { action: 'getContentOverview' }, (overviewResponse) => {
-          if (overviewResponse) {
-            displayOverview(overviewResponse);
-          }
-        });
+      chrome.tabs.sendMessage(tabs[0].id, { action: 'getContentOverview' }, (overviewResponse) => {
+        if (overviewResponse) {
+          displayOverview(overviewResponse);
+        }
+      });
 
-        chrome.tabs.sendMessage(tabs[0].id, { action: 'getImagesAndLinks' }, (response) => {
-          if (response) {
-            displayData(response.images, response.links, response.overview);
-          }
-        });
-      } else {
-        messageElement.style.display = 'block';
-        tabContainer.style.display = 'none';
-      }
-    });
+      chrome.tabs.sendMessage(tabs[0].id, { action: 'getImagesAndLinks' }, (response) => {
+        if (response) {
+          displayData(response.images, response.links, response.overview);
+        }
+      });
+    } else {
+      messageElement.style.display = 'block';
+      tabContainer.style.display = 'none';
+    }
   });
 });
 
@@ -58,7 +53,8 @@ function displayData(images, links, overview) {
   document.getElementById('total-images').textContent = overview.totalImages;
   document.getElementById('total-images-with-alt').textContent = overview.totalImagesWithAlt;
   document.getElementById('total-images-without-alt').textContent = overview.totalImagesWithoutAlt;
-  document.getElementById('image-formats-count').textContent = JSON.stringify(overview.imageFormatsCount);
+  document.getElementById('missing-title').textContent = overview.totalImagesWithoutTitle;
+  document.getElementById('missing-caption').textContent = overview.totalImagesWithoutCaption;
 
   document.getElementById('total-urls').textContent = overview.totalUrls;
   document.getElementById('total-duplicated-urls').textContent = overview.totalDuplicatedUrls;
@@ -92,4 +88,13 @@ function displayData(images, links, overview) {
     row.insertCell(4).textContent = link.is_nofollow;
     row.insertCell(5).textContent = link.is_new_tab;
   });
+
+  const imageFormatsList = document.getElementById('image-formats-list');
+  imageFormatsList.innerHTML = '';
+
+  for (const [format, count] of Object.entries(overview.imageFormatsCount)) {
+    const listItem = document.createElement('li');
+    listItem.textContent = `${format}: ${count}`;
+    imageFormatsList.appendChild(listItem);
+  }
 }

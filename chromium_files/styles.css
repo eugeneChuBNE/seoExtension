@@ -3,6 +3,9 @@ body {
     width: 650px;
     height: 600px;
     overflow: auto;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
   }
   
   .tabs {
@@ -12,11 +15,13 @@ body {
   }
   
   .tab {
-    padding: 10px;
+    padding: 10px 20px;
     border: 1px solid #ddd;
     border-bottom: none;
     background-color: #f2f2f2;
     margin-right: 2px;
+    text-align: center;
+    flex: 1;
   }
   
   .tab.active {
@@ -27,7 +32,7 @@ body {
   .tab-content {
     display: none;
     border: 1px solid #ddd;
-    padding: 10px;
+    padding: 20px;
     background-color: white;
   }
   
@@ -35,14 +40,62 @@ body {
     display: block;
   }
   
+  .overview-section, .links-section, .images-section {
+    margin-bottom: 20px;
+  }
+  
+  .section-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .stat-box-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .stat-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    margin: 5px;
+    background-color: #f2f2f2;
+    text-align: center;
+    border-radius: 10px;
+    width: calc(33.333% - 10px); /* 3 columns */
+    font-size: 12px;
+    box-sizing: border-box;
+  }
+  
+  .stat-box.wide {
+    width: calc(50% - 10px); /* 2 columns */
+  }
+  
+  .image-formats-section {
+    margin-top: 20px;
+  }
+  
+  .image-formats-section .stat-box {
+    width: 100%;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+  }
+  
   table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 10px;
   }
   
   th, td {
     border: 1px solid #ddd;
     padding: 8px;
+    text-align: left;
   }
   
   th {
@@ -50,7 +103,8 @@ body {
   }
   
   img.thumbnail {
-    width: 600px;
+    width: 100%;
+    max-width: 600px;
     height: auto;
     display: block;
     margin-top: 10px;
@@ -58,5 +112,23 @@ body {
   
   #message {
     color: red;
+    text-align: center;
+  }
+  
+  footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 12px;
+  }
+  
+  .overview-section {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .overview-section:hover {
+    background-color: #f9f9f9;
   }
   

@@ -26,12 +26,15 @@ function getImagesAndLinks() {
   const imageFormatsCount = {};
   let totalImagesWithAlt = 0;
   let totalImagesWithoutAlt = 0;
+  let totalImagesWithTitle = 0;
+  let totalImagesWithoutTitle = 0;
+  let totalImagesWithCaption = 0;
+  let totalImagesWithoutCaption = 0;
 
   const images = Array.from(contentArea.querySelectorAll('img')).map(img => {
     const figure = img.closest('figure');
     const caption = figure ? figure.querySelector('figcaption') : null;
     
-    // Prioritise data-src or data-srcset if they exist
     const url = img.getAttribute('data-src') || img.src || '';
     const name = url.substring(url.lastIndexOf('/') + 1);
     const format = url.split('.').pop();
@@ -44,6 +47,18 @@ function getImagesAndLinks() {
       totalImagesWithAlt++;
     } else {
       totalImagesWithoutAlt++;
+    }
+
+    if (img.title) {
+      totalImagesWithTitle++;
+    } else {
+      totalImagesWithoutTitle++;
+    }
+
+    if (caption) {
+      totalImagesWithCaption++;
+    } else {
+      totalImagesWithoutCaption++;
     }
 
     return {
@@ -80,6 +95,10 @@ function getImagesAndLinks() {
       imageFormatsCount,
       totalImagesWithAlt,
       totalImagesWithoutAlt,
+      totalImagesWithTitle,
+      totalImagesWithoutTitle,
+      totalImagesWithCaption,
+      totalImagesWithoutCaption,
       totalUrls,
       totalDuplicatedUrls,
       totalNewTabUrls,
