@@ -54,8 +54,8 @@ function displayData(images, links, overview) {
   document.getElementById('total-images').textContent = overview.totalImages;
   document.getElementById('total-images-with-alt').textContent = overview.totalImagesWithAlt;
   document.getElementById('total-images-without-alt').textContent = overview.totalImagesWithoutAlt;
-  document.getElementById('missing-title').textContent = overview.totalImagesWithoutTitle;
-  document.getElementById('missing-caption').textContent = overview.totalImagesWithoutCaption;
+  document.getElementById('missing-title').textContent = overview.totalImagesWithTitle;
+  document.getElementById('missing-caption').textContent = overview.totalImagesWithCaption;
 
   document.getElementById('total-urls').textContent = overview.totalUrls;
   document.getElementById('total-duplicated-urls').textContent = overview.totalDuplicatedUrls;
@@ -101,6 +101,26 @@ function displayData(images, links, overview) {
 
     numberCell.textContent = link.link_id;
     anchorCell.textContent = link.anchor;
+    anchorCell.style.cursor = 'pointer'; // Make anchor cell look clickable
+
+    if (link.is_duplicated) {
+      const findNextButton = document.createElement('button');
+      findNextButton.textContent = 'Find next';
+      findNextButton.style.marginLeft = '10px';
+      findNextButton.addEventListener('click', () => {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          chrome.tabs.sendMessage(tabs[0].id, { action: 'findNextDuplicate', anchorText: link.anchor });
+        });
+      });
+      anchorCell.appendChild(findNextButton);
+    }
+
+    anchorCell.addEventListener('click', () => {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'highlightAnchor', anchorText: link.anchor });
+      });
+    });
+
     const urlLink = document.createElement('a');
     urlLink.href = link.url;
     urlLink.target = '_blank';

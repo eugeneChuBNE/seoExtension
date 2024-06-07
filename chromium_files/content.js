@@ -1,3 +1,7 @@
+let highlightedElement = null;
+let currentDuplicateIndex = -1;
+const duplicateLinks = [];
+
 function getContentOverview() {
   const metaTitle = document.querySelector('title') ? document.querySelector('title').innerText : '';
   const metaDescription = document.querySelector('meta[name="description"]') ? document.querySelector('meta[name="description"]').getAttribute('content') : '';
@@ -71,14 +75,21 @@ function getImagesAndLinks() {
     };
   });
 
-  const links = Array.from(contentArea.querySelectorAll('a')).map(link => ({
-    link_id: linkIdCounter++,
-    anchor: link.textContent || '',
-    url: link.href || '',
-    is_external: link.hostname !== location.hostname,
-    is_nofollow: link.rel.includes('nofollow'),
-    is_new_tab: link.target === '_blank'
-  }));
+  const links = Array.from(contentArea.querySelectorAll('a')).map(link => {
+    const is_duplicated = Array.from(contentArea.querySelectorAll('a')).filter(l => l.href === link.href).length > 1;
+    if (is_duplicated) {
+      duplicateLinks.push(link);
+    }
+    return {
+      link_id: linkIdCounter++,
+      anchor: link.textContent || '',
+      url: link.href || '',
+      is_external: link.hostname !== location.hostname,
+      is_nofollow: link.rel.includes('nofollow'),
+      is_new_tab: link.target === '_blank',
+      is_duplicated: is_duplicated
+    };
+  });
 
   const totalUrls = links.length;
   const totalDuplicatedUrls = links.length - new Set(links.map(link => link.url)).size;
@@ -109,10 +120,44 @@ function getImagesAndLinks() {
   };
 }
 
+function highlightAnchor(anchorText) {
+  // Remove highlight from the previously highlighted element
+  if (highlightedElement) {
+    highlightedElement.style.backgroundColor = '';
+  }
+
+  // Find and highlight the new element
+  const elements = document.querySelectorAll('a, span, div, p, h1, h2, h3, h4, h5, h6');
+  elements.forEach(el => {
+    if (el.textContent.trim() === anchorText.trim()) {
+      el.style.backgroundColor = 'lightorange';
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      highlightedElement = el;
+    }
+  });
+}
+
+function findNextDuplicate(anchorText) {
+  if (duplicateLinks.length === 0) return;
+
+  currentDuplicateIndex++;
+  if (currentDuplicateIndex >= duplicateLinks.length) {
+    currentDuplicateIndex = 0;
+  }
+
+  const nextDuplicate = duplicateLinks[currentDuplicateIndex];
+  nextDuplicate.style.backgroundColor = 'lightorange';
+  nextDuplicate.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'getImagesAndLinks') {
     sendResponse(getImagesAndLinks());
   } else if (request.action === 'getContentOverview') {
     sendResponse(getContentOverview());
+  } else if (request.action === 'highlightAnchor') {
+    highlightAnchor(request.anchorText);
+  } else if (request.action === 'findNextDuplicate') {
+    findNextDuplicate(request.anchorText);
   }
 });
