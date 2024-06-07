@@ -132,3 +132,83 @@ body {
     background-color: #f9f9f9;
   }
   
+  .note-section {
+    margin-top: 20px;
+  }
+  
+  .note-section .note {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  
+  .note-section .color-box {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+  }
+  
+  .link-overview-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  
+  .link-overview-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    text-align: center;
+    border-radius: 10px;
+    width: calc(16.666% - 10px); /* 6 columns */
+    margin: 5px;
+    font-size: 10px;
+    box-sizing: border-box;
+    height: 40px;
+  }
+  
+  .link-overview-box span {
+    font-size: 12px;
+    font-weight: normal;
+  }
+  
+  .link-overview-label {
+    display: inline-block;
+    padding: 2px 5px;
+    border-radius: 5px;
+    color: #fff;
+  }
+  
+  .link-overview-total .link-overview-label {
+    background-color: #d9d9d9;
+    color: #000;
+  }
+  
+  .link-overview-duplicate .link-overview-label {
+    background-color: #FFFF00;
+    color: #000;
+  }
+  
+  .link-overview-new-tab .link-overview-label {
+    background-color: #F4CCCC;
+    color: #000;
+  }
+  
+  .link-overview-internal .link-overview-label {
+    background-color: #D9EAD3;
+    color: #000;
+  }
+  
+  .link-overview-external .link-overview-label {
+    background-color: #f9cb9c;
+    color: #000;
+  }
+  
+  .link-overview-no-follow .link-overview-label {
+    background-color: #ead1dc;
+    color: #000;
+  }
+  

@@ -55,21 +55,59 @@
     </div>
 
     <div id="links-tab" class="tab-content">
-      <h2>Link</h2>
-      <div class="table-container">
-        <table id="links-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Anchor Text</th>
-              <th>URL</th>
-              <th>Is External</th>
-              <th>Is No-follow</th>
-              <th>Is New Tab</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+      <div class="overview-section">
+        <div class="section-header">Link Overview</div>
+        <div class="link-overview-container">
+          <div class="link-overview-box link-overview-total">
+            <span class="link-overview-label">Total</span><br><span id="link-total-urls"></span>
+          </div>
+          <div class="link-overview-box link-overview-duplicate">
+            <span class="link-overview-label">Duplicate</span><br><span id="link-total-duplicated-urls"></span>
+          </div>
+          <div class="link-overview-box link-overview-new-tab">
+            <span class="link-overview-label">Opennewtab</span><br><span id="link-total-new-tab-urls"></span>
+          </div>
+          <div class="link-overview-box link-overview-internal">
+            <span class="link-overview-label">Internal</span><br><span id="link-total-internal-links"></span>
+          </div>
+          <div class="link-overview-box link-overview-external">
+            <span class="link-overview-label">External</span><br><span id="link-total-external-links"></span>
+          </div>
+          <div class="link-overview-box link-overview-no-follow">
+            <span class="link-overview-label">Nofollow</span><br><span id="link-total-no-follow-urls"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="overview-section">
+        <div class="section-header">Link</div>
+        <div class="table-container">
+          <table id="links-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Anchor Text</th>
+                <th>URL</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="note-section">
+          <div class="note">
+            <div class="color-box" style="background-color: #FFFF00;"></div>
+            <span>Duplicated URL</span>
+          </div>
+          <div class="note">
+            <div class="color-box" style="background-color: #D9EAD3;"></div>
+            <span>External URL</span>
+          </div>
+          <div class="note">
+            <div class="color-box" style="background-color: #F4CCCC;"></div>
+            <span>Open in New Tab</span>
+          </div>
+        </div>
       </div>
     </div>
 

@@ -50,6 +50,7 @@ function displayOverview(data) {
 }
 
 function displayData(images, links, overview) {
+  // Overview tab counts
   document.getElementById('total-images').textContent = overview.totalImages;
   document.getElementById('total-images-with-alt').textContent = overview.totalImagesWithAlt;
   document.getElementById('total-images-without-alt').textContent = overview.totalImagesWithoutAlt;
@@ -63,6 +64,14 @@ function displayData(images, links, overview) {
   document.getElementById('total-external-links').textContent = overview.totalExternalLinks;
   document.getElementById('total-no-follow-urls').textContent = overview.totalNoFollowUrls;
 
+  // Links tab counts
+  document.getElementById('link-total-urls').textContent = overview.totalUrls;
+  document.getElementById('link-total-duplicated-urls').textContent = overview.totalDuplicatedUrls;
+  document.getElementById('link-total-new-tab-urls').textContent = overview.totalNewTabUrls;
+  document.getElementById('link-total-internal-links').textContent = overview.totalInternalLinks;
+  document.getElementById('link-total-external-links').textContent = overview.totalExternalLinks;
+  document.getElementById('link-total-no-follow-urls').textContent = overview.totalNoFollowUrls;
+
   const imagesTable = document.getElementById('images-table').getElementsByTagName('tbody')[0];
   const linksTable = document.getElementById('links-table').getElementsByTagName('tbody')[0];
 
@@ -73,7 +82,12 @@ function displayData(images, links, overview) {
     const row = imagesTable.insertRow();
     row.insertCell(0).textContent = image.id;
     row.insertCell(1).textContent = image.alt_text;
-    row.insertCell(2).textContent = image.url;
+    const urlCell = row.insertCell(2);
+    const urlLink = document.createElement('a');
+    urlLink.href = image.url;
+    urlLink.target = '_blank';
+    urlLink.textContent = image.url;
+    urlCell.appendChild(urlLink);
     row.insertCell(3).textContent = image.name;
     row.insertCell(4).textContent = image.format;
     row.insertCell(5).textContent = image.caption;
@@ -81,12 +95,27 @@ function displayData(images, links, overview) {
 
   links.forEach(link => {
     const row = linksTable.insertRow();
-    row.insertCell(0).textContent = link.link_id;
-    row.insertCell(1).textContent = link.anchor;
-    row.insertCell(2).textContent = link.url;
-    row.insertCell(3).textContent = link.is_external;
-    row.insertCell(4).textContent = link.is_nofollow;
-    row.insertCell(5).textContent = link.is_new_tab;
+    const numberCell = row.insertCell(0);
+    const anchorCell = row.insertCell(1);
+    const urlCell = row.insertCell(2);
+
+    numberCell.textContent = link.link_id;
+    anchorCell.textContent = link.anchor;
+    const urlLink = document.createElement('a');
+    urlLink.href = link.url;
+    urlLink.target = '_blank';
+    urlLink.textContent = link.url;
+    urlCell.appendChild(urlLink);
+
+    if (link.is_duplicated) {
+      urlCell.style.backgroundColor = '#FFFF00'; // Yellow
+    }
+    if (link.is_external) {
+      numberCell.style.backgroundColor = '#D9EAD3'; // Green
+    }
+    if (link.is_new_tab) {
+      anchorCell.style.backgroundColor = '#F4CCCC'; // Red
+    }
   });
 
   const imageFormatsList = document.getElementById('image-formats-list');
