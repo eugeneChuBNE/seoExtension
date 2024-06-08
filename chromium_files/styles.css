@@ -2,213 +2,272 @@ body {
     font-family: Arial, sans-serif;
     width: 650px;
     height: 600px;
-    overflow: auto;
+    overflow: hidden;
     margin: 0;
-    padding: 20px;
+    padding: 0;
     box-sizing: border-box;
-  }
-  
-  .tabs {
+    background-color: #f1f1f1;
+}
+
+.tabs {
     display: flex;
     cursor: pointer;
-    margin-bottom: 20px;
-  }
-  
-  .tab {
+    background-color: #fff;
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+    margin: 0;
+    padding: 0;
+}
+
+.tab {
     padding: 10px 20px;
     border: 1px solid #ddd;
     border-bottom: none;
-    background-color: #f2f2f2;
-    margin-right: 2px;
+    background-color: #fff;
     text-align: center;
     flex: 1;
-  }
-  
-  .tab.active {
-    background-color: white;
+    transition: background-color 0.3s ease;
+    margin: 0;
+}
+
+.tab:hover {
+    background-color: #e0f7ff;
+}
+
+.tab.active {
+    background-color: #e0f7ff;
     font-weight: bold;
-  }
-  
-  .tab-content {
+    border-bottom: 3px solid #0b72b9;
+}
+
+.tab-content {
     display: none;
     border: 1px solid #ddd;
     padding: 20px;
-    background-color: white;
-  }
-  
-  .tab-content.active {
+    background-color: #f1f1f1;
+    overflow-y: auto;
+    height: calc(100% - 82px); /* Adjust height based on header and footer */
+    margin: 0;
+}
+
+.tab-content.active {
     display: block;
-  }
-  
-  .overview-section, .links-section, .images-section {
+}
+
+.overview-section, .links-section, .images-section {
     margin-bottom: 20px;
-  }
-  
-  .section-header {
+    width: calc(100% - 40px);
+    background-color: white;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px 0;
+}
+
+.section-header {
     font-weight: bold;
+    font-size: 1.2em;
     margin-bottom: 10px;
-  }
-  
-  .stat-box-container {
+}
+
+.stat-box-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-  }
-  
-  .stat-box {
+    margin: 0;
+}
+
+.stat-box {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 10px;
-    margin: 5px;
     background-color: #f2f2f2;
     text-align: center;
     border-radius: 10px;
     width: calc(33.333% - 10px); /* 3 columns */
     font-size: 12px;
     box-sizing: border-box;
-  }
-  
-  .stat-box.wide {
+    margin: 5px;
+}
+
+.stat-box.wide {
     width: calc(50% - 10px); /* 2 columns */
-  }
-  
-  .image-formats-section {
+}
+
+.image-formats-section {
     margin-top: 20px;
-  }
-  
-  .image-formats-section .stat-box {
+}
+
+.image-formats-section .stat-box {
     width: 100%;
-  }
-  
-  .table-container {
+}
+
+.table-container {
     overflow-x: auto;
-  }
-  
-  table {
+    margin: 0;
+}
+
+table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
-  }
-  
-  th, td {
+}
+
+th, td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
-  }
-  
-  th {
+}
+
+th {
     background-color: #f2f2f2;
-  }
-  
-  img.thumbnail {
+}
+
+img.thumbnail {
     width: 100%;
     max-width: 600px;
     height: auto;
     display: block;
     margin-top: 10px;
-  }
-  
-  #message {
+}
+
+#message {
     color: red;
     text-align: center;
-  }
-  
-  footer {
+    margin: 0;
+}
+
+footer {
     text-align: center;
-    margin-top: 20px;
     font-size: 12px;
-  }
-  
-  .overview-section {
-    border: 1px solid #ddd;
+    background-color: #1e3c72;
+    color: white;
     padding: 10px;
-    border-radius: 10px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .overview-section:hover {
-    background-color: #f9f9f9;
-  }
-  
-  .note-section {
+    width: 100%;
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin: 0;
+}
+
+.footer-logo {
+    width: 50px;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.note-section {
     margin-top: 20px;
-  }
-  
-  .note-section .note {
+}
+
+.note-section .note {
     display: flex;
     align-items: center;
     margin-bottom: 5px;
-  }
-  
-  .note-section .color-box {
+}
+
+.note-section .color-box {
     width: 20px;
     height: 20px;
     margin-right: 10px;
     border: 1px solid #ddd;
-  }
-  
-  .link-overview-container {
+}
+
+.link-overview-container {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-  }
-  
-  .link-overview-box {
+}
+
+.link-overview-box {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 5px;
     text-align: center;
-    border-radius: 10px;
+    border-radius: 0px; /* Remove border radius */
     width: calc(16.666% - 10px); /* 6 columns */
-    margin: 5px;
     font-size: 10px;
     box-sizing: border-box;
     height: 40px;
-  }
-  
-  .link-overview-box span {
+    margin: 5px;
+    border-left: 1px solid #ddd;
+}
+
+.link-overview-box:first-child {
+    border-left: none; /* Remove left border from the first child */
+}
+
+.link-overview-box span {
     font-size: 12px;
     font-weight: normal;
-  }
-  
-  .link-overview-label {
+}
+
+.link-overview-label {
     display: inline-block;
     padding: 2px 5px;
     border-radius: 5px;
     color: #fff;
-  }
-  
-  .link-overview-total .link-overview-label {
+}
+
+.link-overview-total .link-overview-label {
     background-color: #d9d9d9;
     color: #000;
-  }
-  
-  .link-overview-duplicate .link-overview-label {
+}
+
+.link-overview-duplicate .link-overview-label {
     background-color: #FFFF00;
     color: #000;
-  }
-  
-  .link-overview-new-tab .link-overview-label {
+}
+
+.link-overview-new-tab .link-overview-label {
     background-color: #F4CCCC;
     color: #000;
-  }
-  
-  .link-overview-internal .link-overview-label {
+}
+
+.link-overview-internal .link-overview-label {
     background-color: #D9EAD3;
     color: #000;
-  }
-  
-  .link-overview-external .link-overview-label {
+}
+
+.link-overview-external .link-overview-label {
     background-color: #f9cb9c;
     color: #000;
-  }
-  
-  .link-overview-no-follow .link-overview-label {
+}
+
+.link-overview-no-follow .link-overview-label {
     background-color: #ead1dc;
     color: #000;
-  }
-  
+}
+
+.link-overview-section .stat-box {
+    background-color: #dcd6f3; /* light purple */
+}
+
+.image-overview-section .stat-box {
+    background-color: #fdebd3; /* light skin */
+}
+
+.tabs {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+}
+
+.tab-content {
+    margin-top: 42px; /* Adjust based on the height of tabs */
+    background-color: #f1f1f1; /* Match the general background color */
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+}
