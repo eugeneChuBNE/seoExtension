@@ -111,14 +111,18 @@ function displayData(images, links, overview) {
     row.insertCell(0).textContent = image.id;
     row.insertCell(1).textContent = image.alt_text;
     row.insertCell(2).textContent = image.caption;
-    const urlCell = row.insertCell(3);
-    const urlLink = document.createElement('a');
-    urlLink.href = image.url;
-    urlLink.target = '_blank';
-    urlLink.textContent = image.url;
-    urlCell.appendChild(urlLink);
-    row.insertCell(4).textContent = image.name;
-    row.insertCell(5).textContent = image.format;
+    const imageCell = row.insertCell(3);
+    const img = document.createElement('img');
+    img.src = image.url;
+    img.alt = image.alt_text;
+    img.classList.add('thumbnail');
+    imageCell.appendChild(img);
+    const fileNameLink = document.createElement('a');
+    fileNameLink.href = image.url;
+    fileNameLink.target = '_blank';
+    fileNameLink.textContent = image.name;
+    imageCell.appendChild(fileNameLink);
+    row.insertCell(4).textContent = image.format;
 
     const imgElement = document.createElement('img');
     imgElement.src = image.url;
