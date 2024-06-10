@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabContents = document.querySelectorAll('.tab-content');
   const messageElement = document.getElementById('message');
   const tabContainer = document.getElementById('tab-container');
+  const toggleImageViewButton = document.getElementById('toggle-image-view');
+  const imageViewContainer = document.getElementById('image-view-container');
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
@@ -37,6 +39,24 @@ document.addEventListener('DOMContentLoaded', () => {
       tabContainer.style.display = 'none';
     }
   });
+
+  document.getElementById('grid-select').addEventListener('change', function() {
+    updateGridLayout(this.value);
+  });
+
+  toggleImageViewButton.addEventListener('click', () => {
+    if (imageViewContainer.style.display === 'none') {
+      imageViewContainer.style.display = 'block';
+      toggleImageViewButton.textContent = 'Collapse';
+    } else {
+      imageViewContainer.style.display = 'none';
+      toggleImageViewButton.textContent = 'Expand';
+    }
+  });
+
+  // Set default grid layout to 4 columns
+  document.getElementById('grid-select').value = '4';
+  updateGridLayout('4');
 });
 
 function displayOverview(data) {
@@ -54,8 +74,8 @@ function displayData(images, links, overview) {
   document.getElementById('total-images').textContent = overview.totalImages;
   document.getElementById('total-images-with-alt').textContent = overview.totalImagesWithAlt;
   document.getElementById('total-images-without-alt').textContent = overview.totalImagesWithoutAlt;
-  document.getElementById('missing-title').textContent = overview.totalImagesWithTitle;
-  document.getElementById('missing-caption').textContent = overview.totalImagesWithCaption;
+  document.getElementById('missing-title').textContent = overview.totalImagesWithoutTitle;
+  document.getElementById('missing-caption').textContent = overview.totalImagesWithoutCaption;
 
   document.getElementById('total-urls').textContent = overview.totalUrls;
   document.getElementById('total-duplicated-urls').textContent = overview.totalDuplicatedUrls;
@@ -72,25 +92,39 @@ function displayData(images, links, overview) {
   document.getElementById('link-total-external-links').textContent = overview.totalExternalLinks;
   document.getElementById('link-total-no-follow-urls').textContent = overview.totalNoFollowUrls;
 
+  // Images tab counts
+  document.getElementById('total-images-overview').textContent = overview.totalImages;
+  document.getElementById('total-missing-title-overview').textContent = overview.totalImagesWithoutTitle;
+  document.getElementById('total-missing-alt-overview').textContent = overview.totalImagesWithoutAlt;
+  document.getElementById('total-missing-caption-overview').textContent = overview.totalImagesWithoutCaption;
+
   const imagesTable = document.getElementById('images-table').getElementsByTagName('tbody')[0];
   const linksTable = document.getElementById('links-table').getElementsByTagName('tbody')[0];
+  const imageView = document.getElementById('image-view');
 
   imagesTable.innerHTML = '';
   linksTable.innerHTML = '';
+  imageView.innerHTML = '';
 
   images.forEach(image => {
     const row = imagesTable.insertRow();
     row.insertCell(0).textContent = image.id;
     row.insertCell(1).textContent = image.alt_text;
-    const urlCell = row.insertCell(2);
+    row.insertCell(2).textContent = image.caption;
+    const urlCell = row.insertCell(3);
     const urlLink = document.createElement('a');
     urlLink.href = image.url;
     urlLink.target = '_blank';
     urlLink.textContent = image.url;
     urlCell.appendChild(urlLink);
-    row.insertCell(3).textContent = image.name;
-    row.insertCell(4).textContent = image.format;
-    row.insertCell(5).textContent = image.caption;
+    row.insertCell(4).textContent = image.name;
+    row.insertCell(5).textContent = image.format;
+
+    const imgElement = document.createElement('img');
+    imgElement.src = image.url;
+    imgElement.alt = image.alt_text;
+    imgElement.classList.add('thumbnail');
+    imageView.appendChild(imgElement);
   });
 
   links.forEach(link => {
@@ -146,4 +180,13 @@ function displayData(images, links, overview) {
     listItem.textContent = `${format}: ${count}`;
     imageFormatsList.appendChild(listItem);
   }
+
+  // Display images in the image grid
+  updateGridLayout(document.getElementById('grid-select').value);
+}
+
+function updateGridLayout(columns) {
+  const imageView = document.getElementById('image-view');
+  imageView.className = 'image-grid'; // Reset class name to base
+  imageView.classList.add(`grid-${columns}`);
 }
