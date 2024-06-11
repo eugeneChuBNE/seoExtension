@@ -213,42 +213,9 @@ footer {
     display: inline-block;
     padding: 4px 10px;
     border-radius: 5px;
-    color: #fff;
+    color: #000;
     margin-bottom: 0;
-}
-
-.link-overview-total .link-overview-label {
-    background-color: #d9d9d9;
-    color: #000;
-}
-
-.link-overview-duplicate .link-overview-label {
-    background-color: #FFFF00;
-    color: #000;
-}
-
-.link-overview-new-tab .link-overview-label {
-    background-color: #F4CCCC;
-    color: #000;
-}
-
-.link-overview-internal .link-overview-label {
-    background-color: #D9EAD3;
-    color: #000;
-}
-
-.link-overview-external .link-overview-label {
-    background-color: #f9cb9c;
-    color: #000;
-}
-
-.link-overview-no-follow .link-overview-label {
-    background-color: #ead1dc;
-    color: #000;
-}
-
-.link-overview-section .stat-box {
-    background-color: #dcd6f3;
+    background-color: #e0f7ff; /* Light blue background */
 }
 
 .image-overview-section .stat-box {
@@ -320,28 +287,9 @@ footer {
     display: inline-block;
     padding: 4px 10px;
     border-radius: 5px;
-    color: #fff;
+    color: #000;
     margin-bottom: 0;
-}
-
-.image-overview-total .image-overview-label {
-    background-color: #d9d9d9;
-    color: #000;
-}
-
-.image-overview-missing-title .image-overview-label {
-    background-color: #ffe599;
-    color: #000;
-}
-
-.image-overview-missing-alt .image-overview-label {
-    background-color: #f9cb9c;
-    color: #000;
-}
-
-.image-overview-missing-caption .image-overview-label {
-    background-color: #ead1dc;
-    color: #000;
+    background-color: #e0f7ff; /* Light blue background */
 }
 
 .toggle-button {

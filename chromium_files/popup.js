@@ -108,10 +108,17 @@ function displayData(images, links, overview) {
 
   images.forEach(image => {
     const row = imagesTable.insertRow();
-    row.insertCell(0).textContent = image.id;
-    row.insertCell(1).textContent = image.alt_text;
-    row.insertCell(2).textContent = image.caption;
+    const numberCell = row.insertCell(0);
+    const altCell = row.insertCell(1);
+    const captionCell = row.insertCell(2);
     const imageCell = row.insertCell(3);
+    const formatCell = row.insertCell(4);
+
+    numberCell.textContent = image.id;
+    altCell.textContent = image.alt_text;
+    captionCell.textContent = image.caption;
+    formatCell.textContent = image.format;
+
     const img = document.createElement('img');
     img.src = image.url;
     img.alt = image.alt_text;
@@ -122,7 +129,12 @@ function displayData(images, links, overview) {
     fileNameLink.target = '_blank';
     fileNameLink.textContent = image.name;
     imageCell.appendChild(fileNameLink);
-    row.insertCell(4).textContent = image.format;
+
+    row.addEventListener('click', () => {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'scrollToImage', imageUrl: image.url });
+      });
+    });
 
     const imgElement = document.createElement('div');
     imgElement.classList.add('image-container');
@@ -135,6 +147,11 @@ function displayData(images, links, overview) {
     imgInfo.textContent = `${image.id}. ${image.name}`;
     imgElement.appendChild(imgTag);
     imgElement.appendChild(imgInfo);
+    imgElement.addEventListener('click', () => {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'scrollToImage', imageUrl: image.url });
+      });
+    });
     imageView.appendChild(imgElement);
   });
 
