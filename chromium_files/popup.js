@@ -124,10 +124,17 @@ function displayData(images, links, overview) {
     imageCell.appendChild(fileNameLink);
     row.insertCell(4).textContent = image.format;
 
-    const imgElement = document.createElement('img');
-    imgElement.src = image.url;
-    imgElement.alt = image.alt_text;
-    imgElement.classList.add('thumbnail');
+    const imgElement = document.createElement('div');
+    imgElement.classList.add('image-container');
+    const imgTag = document.createElement('img');
+    imgTag.src = image.url;
+    imgTag.alt = image.alt_text;
+    imgTag.classList.add('thumbnail');
+    const imgInfo = document.createElement('div');
+    imgInfo.classList.add('image-info');
+    imgInfo.textContent = `${image.id}. ${image.name}`;
+    imgElement.appendChild(imgTag);
+    imgElement.appendChild(imgInfo);
     imageView.appendChild(imgElement);
   });
 
@@ -155,7 +162,7 @@ function displayData(images, links, overview) {
 
     anchorCell.addEventListener('click', () => {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.tabs.sendMessage(tabs[0].id, { action: 'highlightAnchor', anchorText: link.anchor });
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'scrollToAnchor', anchorText: link.anchor });
       });
     });
 
