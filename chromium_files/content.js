@@ -3,12 +3,26 @@ let currentDuplicateIndex = -1;
 const duplicateLinks = [];
 
 function getContentOverview() {
-  const metaTitle = document.querySelector('title') ? document.querySelector('title').innerText : '';
+  console.log("Fetching content overview...");
+
+  const metaTitleElement = document.querySelector('.edit-post-visual-editor__post-title-wrapper');
+  const metaTitle = metaTitleElement ? metaTitleElement.innerText : document.querySelector('title') ? document.querySelector('title').innerText : '';
+
   const metaDescription = document.querySelector('meta[name="description"]') ? document.querySelector('meta[name="description"]').getAttribute('content') : '';
   const thumbnail = document.querySelector('meta[property="og:image"]') ? document.querySelector('meta[property="og:image"]').getAttribute('content') : '';
   const thumbnailAlt = document.querySelector(`img[src="${thumbnail}"]`) ? document.querySelector(`img[src="${thumbnail}"]`).alt : '';
-  const contentElements = Array.from(document.querySelectorAll('#vnx_post_content > *')).filter(el => !Array.from(el.classList).some(cls => cls.includes('widget')));
-  const wordCount = contentElements.reduce((count, el) => count + el.innerText.split(/\s+/).length, 0);
+  
+  const contentArea = getContentArea();
+  if (!contentArea) {
+    console.error("Content area not found.");
+    return {};
+  }
+
+  const contentElements = Array.from(contentArea.children).filter(el => !el.classList.contains('widget'));
+  const words = contentElements.reduce((allWords, el) => allWords.concat(el.innerText.split(/\s+/).filter(Boolean)), []);
+  const wordCount = words.length;
+
+  console.log("Counted words:", words);
 
   return {
     metaTitle,
@@ -19,9 +33,22 @@ function getContentOverview() {
   };
 }
 
+function getContentArea() {
+  const url = window.location.href;
+
+  if (url.endsWith("/post-new.php") || url.includes("action=edit")) {
+    return document.querySelector('.wp-block-post-content');
+  } else {
+    return document.querySelector('#vnx_post_content');
+  }
+}
+
 function getImagesAndLinks() {
-  const contentArea = document.querySelector('#vnx_post_content');
+  console.log("Fetching images and links...");
+
+  const contentArea = getContentArea();
   if (!contentArea) {
+    console.error("Content area not found.");
     return { images: [], links: [] };
   }
 
@@ -36,49 +63,47 @@ function getImagesAndLinks() {
   let totalImagesWithCaption = 0;
   let totalImagesWithoutCaption = 0;
 
-  const images = Array.from(contentArea.querySelectorAll('img'))
-    .filter(img => !img.closest('[class*="widget"]'))
-    .map(img => {
-      const figure = img.closest('figure');
-      const caption = figure ? figure.querySelector('figcaption') : null;
-      
-      const url = img.getAttribute('data-src') || img.src || '';
-      const name = url.substring(url.lastIndexOf('/') + 1);
-      const format = url.split('.').pop();
+  const images = Array.from(contentArea.querySelectorAll('img')).map(img => {
+    const figure = img.closest('figure');
+    const caption = figure ? figure.querySelector('figcaption') : null;
+    
+    const url = img.getAttribute('data-src') || img.src || '';
+    const name = url.substring(url.lastIndexOf('/') + 1);
+    const format = url.split('.').pop();
 
-      if (format) {
-        imageFormatsCount[format] = (imageFormatsCount[format] || 0) + 1;
-      }
+    if (format) {
+      imageFormatsCount[format] = (imageFormatsCount[format] || 0) + 1;
+    }
 
-      if (img.alt) {
-        totalImagesWithAlt++;
-      } else {
-        totalImagesWithoutAlt++;
-      }
+    if (img.alt) {
+      totalImagesWithAlt++;
+    } else {
+      totalImagesWithoutAlt++;
+    }
 
-      if (img.title) {
-        totalImagesWithTitle++;
-      } else {
-        totalImagesWithoutTitle++;
-      }
+    if (img.title) {
+      totalImagesWithTitle++;
+    } else {
+      totalImagesWithoutTitle++;
+    }
 
-      if (caption) {
-        totalImagesWithCaption++;
-      } else {
-        totalImagesWithoutCaption++;
-      }
+    if (caption) {
+      totalImagesWithCaption++;
+    } else {
+      totalImagesWithoutCaption++;
+    }
 
-      return {
-        id: imageIdCounter++,
-        alt_text: img.alt || '',
-        url: url,
-        name: name,
-        format: format,
-        caption: caption ? caption.textContent : ''
-      };
-    });
+    return {
+      id: imageIdCounter++,
+      alt_text: img.alt || '',
+      url: url,
+      name: name,
+      format: format,
+      caption: caption ? caption.textContent : ''
+    };
+  });
 
-  const links = Array.from(contentArea.querySelectorAll('a')).filter(link => !link.closest('[class*="widget"]')).map(link => {
+  const links = Array.from(contentArea.querySelectorAll('a')).map(link => {
     const is_duplicated = Array.from(contentArea.querySelectorAll('a')).filter(l => l.href === link.href).length > 1;
     if (is_duplicated) {
       duplicateLinks.push(link);
@@ -173,17 +198,31 @@ function findNextDuplicate(anchorText) {
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === 'getImagesAndLinks') {
-    sendResponse(getImagesAndLinks());
-  } else if (request.action === 'getContentOverview') {
-    sendResponse(getContentOverview());
-  } else if (request.action === 'highlightAnchor') {
-    highlightAnchor(request.anchorText);
-  } else if (request.action === 'scrollToAnchor') {
-    scrollToAnchor(request.anchorText);
-  } else if (request.action === 'scrollToImage') {
-    scrollToImage(request.imageUrl);
-  } else if (request.action === 'findNextDuplicate') {
-    findNextDuplicate(request.anchorText);
+  console.log("Received request:", request);
+
+  try {
+    if (request.action === 'getContentOverview' || request.action === 'getContentOverviewFromCreate' || request.action === 'getContentOverviewFromEdit') {
+      const result = getContentOverview();
+      sendResponse(result);
+    } else if (request.action === 'getImagesAndLinks') {
+      const result = getImagesAndLinks();
+      sendResponse(result);
+    } else if (request.action === 'highlightAnchor') {
+      highlightAnchor(request.anchorText);
+    } else if (request.action === 'scrollToAnchor') {
+      scrollToAnchor(request.anchorText);
+    } else if (request.action === 'scrollToImage') {
+      scrollToImage(request.imageUrl);
+    } else if (request.action === 'findNextDuplicate') {
+      findNextDuplicate(request.anchorText);
+    } else {
+      sendResponse({ error: "Unknown action" });
+    }
+  } catch (error) {
+    console.error("Error handling request:", error);
+    sendResponse({ error: error.message });
   }
+
+  // Indicate that the response is asynchronous
+  return true;
 });

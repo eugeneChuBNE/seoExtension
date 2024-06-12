@@ -23,15 +23,36 @@ document.addEventListener('DOMContentLoaded', () => {
       messageElement.style.display = 'none';
       tabContainer.style.display = 'block';
 
-      chrome.tabs.sendMessage(tabs[0].id, { action: 'getContentOverview' }, (overviewResponse) => {
-        if (overviewResponse) {
+      let action;
+      if (currentTabUrl.includes('wp-admin/post-new.php')) {
+        action = 'getContentOverviewFromCreate';
+      } else if (currentTabUrl.includes('wp-admin/post.php') && currentTabUrl.includes('&action=edit')) {
+        action = 'getContentOverviewFromEdit';
+      } else {
+        action = 'getContentOverview';
+      }
+
+      chrome.tabs.sendMessage(tabs[0].id, { action }, (overviewResponse) => {
+        if (chrome.runtime.lastError) {
+          console.error(chrome.runtime.lastError.message);
+          return;
+        }
+        if (overviewResponse && !overviewResponse.error) {
           displayOverview(overviewResponse);
+        } else {
+          console.error('Error in content overview response:', overviewResponse ? overviewResponse.error : 'No response');
         }
       });
 
       chrome.tabs.sendMessage(tabs[0].id, { action: 'getImagesAndLinks' }, (response) => {
-        if (response) {
+        if (chrome.runtime.lastError) {
+          console.error(chrome.runtime.lastError.message);
+          return;
+        }
+        if (response && !response.error) {
           displayData(response.images, response.links, response.overview);
+        } else {
+          console.error('Error in images and links response:', response ? response.error : 'No response');
         }
       });
     } else {
@@ -60,43 +81,59 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function displayOverview(data) {
-  document.getElementById('meta-title').textContent = data.metaTitle;
-  document.getElementById('meta-description').textContent = data.metaDescription;
+  document.getElementById('meta-title').textContent = data.metaTitle || '';
+  document.getElementById('meta-description').textContent = data.metaDescription || '';
   const thumbnail = document.getElementById('thumbnail');
-  thumbnail.src = data.thumbnail;
-  thumbnail.alt = data.thumbnailAlt;
-  document.getElementById('thumbnail-alt').textContent = data.thumbnailAlt;
-  document.getElementById('word-count').textContent = data.wordCount;
+  thumbnail.src = data.thumbnail || '';
+  thumbnail.alt = data.thumbnailAlt || '';
+  document.getElementById('thumbnail-alt').textContent = data.thumbnailAlt || '';
+  document.getElementById('word-count').textContent = data.wordCount || 0;
 }
 
-function displayData(images, links, overview) {
-  // Overview tab counts
-  document.getElementById('total-images').textContent = overview.totalImages;
-  document.getElementById('total-images-with-alt').textContent = overview.totalImagesWithAlt;
-  document.getElementById('total-images-without-alt').textContent = overview.totalImagesWithoutAlt;
-  document.getElementById('missing-title').textContent = overview.totalImagesWithoutTitle;
-  document.getElementById('missing-caption').textContent = overview.totalImagesWithoutCaption;
+function displayData(images = [], links = [], overview = {}) {
+  // Ensure default values if data is undefined
+  const {
+    totalImages = 0,
+    totalImagesWithAlt = 0,
+    totalImagesWithoutAlt = 0,
+    totalImagesWithoutTitle = 0,
+    totalImagesWithoutCaption = 0,
+    totalUrls = 0,
+    totalDuplicatedUrls = 0,
+    totalNewTabUrls = 0,
+    totalInternalLinks = 0,
+    totalExternalLinks = 0,
+    totalNoFollowUrls = 0,
+    imageFormatsCount = {}
+  } = overview;
 
-  document.getElementById('total-urls').textContent = overview.totalUrls;
-  document.getElementById('total-duplicated-urls').textContent = overview.totalDuplicatedUrls;
-  document.getElementById('total-new-tab-urls').textContent = overview.totalNewTabUrls;
-  document.getElementById('total-internal-links').textContent = overview.totalInternalLinks;
-  document.getElementById('total-external-links').textContent = overview.totalExternalLinks;
-  document.getElementById('total-no-follow-urls').textContent = overview.totalNoFollowUrls;
+  // Overview tab counts
+  document.getElementById('total-images').textContent = totalImages;
+  document.getElementById('total-images-with-alt').textContent = totalImagesWithAlt;
+  document.getElementById('total-images-without-alt').textContent = totalImagesWithoutAlt;
+  document.getElementById('missing-title').textContent = totalImagesWithoutTitle;
+  document.getElementById('missing-caption').textContent = totalImagesWithoutCaption;
+
+  document.getElementById('total-urls').textContent = totalUrls;
+  document.getElementById('total-duplicated-urls').textContent = totalDuplicatedUrls;
+  document.getElementById('total-new-tab-urls').textContent = totalNewTabUrls;
+  document.getElementById('total-internal-links').textContent = totalInternalLinks;
+  document.getElementById('total-external-links').textContent = totalExternalLinks;
+  document.getElementById('total-no-follow-urls').textContent = totalNoFollowUrls;
 
   // Links tab counts
-  document.getElementById('link-total-urls').textContent = overview.totalUrls;
-  document.getElementById('link-total-duplicated-urls').textContent = overview.totalDuplicatedUrls;
-  document.getElementById('link-total-new-tab-urls').textContent = overview.totalNewTabUrls;
-  document.getElementById('link-total-internal-links').textContent = overview.totalInternalLinks;
-  document.getElementById('link-total-external-links').textContent = overview.totalExternalLinks;
-  document.getElementById('link-total-no-follow-urls').textContent = overview.totalNoFollowUrls;
+  document.getElementById('link-total-urls').textContent = totalUrls;
+  document.getElementById('link-total-duplicated-urls').textContent = totalDuplicatedUrls;
+  document.getElementById('link-total-new-tab-urls').textContent = totalNewTabUrls;
+  document.getElementById('link-total-internal-links').textContent = totalInternalLinks;
+  document.getElementById('link-total-external-links').textContent = totalExternalLinks;
+  document.getElementById('link-total-no-follow-urls').textContent = totalNoFollowUrls;
 
   // Images tab counts
-  document.getElementById('total-images-overview').textContent = overview.totalImages;
-  document.getElementById('total-missing-title-overview').textContent = overview.totalImagesWithoutTitle;
-  document.getElementById('total-missing-alt-overview').textContent = overview.totalImagesWithoutAlt;
-  document.getElementById('total-missing-caption-overview').textContent = overview.totalImagesWithoutCaption;
+  document.getElementById('total-images-overview').textContent = totalImages;
+  document.getElementById('total-missing-title-overview').textContent = totalImagesWithoutTitle;
+  document.getElementById('total-missing-alt-overview').textContent = totalImagesWithoutAlt;
+  document.getElementById('total-missing-caption-overview').textContent = totalImagesWithoutCaption;
 
   const imagesTable = document.getElementById('images-table').getElementsByTagName('tbody')[0];
   const linksTable = document.getElementById('links-table').getElementsByTagName('tbody')[0];
@@ -203,7 +240,7 @@ function displayData(images, links, overview) {
   const imageFormatsList = document.getElementById('image-formats-list');
   imageFormatsList.innerHTML = '';
 
-  for (const [format, count] of Object.entries(overview.imageFormatsCount)) {
+  for (const [format, count] of Object.entries(imageFormatsCount)) {
     const listItem = document.createElement('li');
     listItem.textContent = `${format}: ${count}`;
     imageFormatsList.appendChild(listItem);
