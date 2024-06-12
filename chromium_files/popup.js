@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
         if (overviewResponse && !overviewResponse.error) {
-          displayOverview(overviewResponse);
+          displayOverview(overviewResponse, action);
         } else {
           console.error('Error in content overview response:', overviewResponse ? overviewResponse.error : 'No response');
         }
@@ -80,14 +80,28 @@ document.addEventListener('DOMContentLoaded', () => {
   updateGridLayout('4');
 });
 
-function displayOverview(data) {
+function displayOverview(data, action) {
+  const metaTitleElement = document.getElementById('meta-title-wrapper');
+  const metaDescriptionElement = document.getElementById('meta-description-wrapper');
+  const thumbnailElement = document.getElementById('thumbnail-wrapper');
+
+  if (action === 'getContentOverviewFromCreate' || action === 'getContentOverviewFromEdit') {
+    metaTitleElement.style.display = 'none';
+    metaDescriptionElement.style.display = 'none';
+    thumbnailElement.style.display = 'none';
+  } else {
+    metaTitleElement.style.display = 'block';
+    metaDescriptionElement.style.display = 'block';
+    thumbnailElement.style.display = 'block';
+  }
+
   document.getElementById('meta-title').textContent = data.metaTitle || '';
   document.getElementById('meta-description').textContent = data.metaDescription || '';
   const thumbnail = document.getElementById('thumbnail');
   thumbnail.src = data.thumbnail || '';
   thumbnail.alt = data.thumbnailAlt || '';
   document.getElementById('thumbnail-alt').textContent = data.thumbnailAlt || '';
-  document.getElementById('word-count').textContent = data.wordCount || 0;
+  document.getElementById('word-count').textContent = `(approx) ${data.wordCount}` || '(approx) 0';
 }
 
 function displayData(images = [], links = [], overview = {}) {
